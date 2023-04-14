@@ -25,6 +25,17 @@ do
     esac
 done
 
+checkCity () {
+  #Curling cities database.
+  curl --silent --output /tmp/shabbat/etc/cities.txt $cityURL --create-dirs
+  # if the city is found in the database, change city value and end the function;
+  # otherwise inform the user of the following and end the program.
+  grep -q "$1" "/tmp/shabbat/etc/cities.txt" && city="$1" && return;
+  echo "The city you entered cannot be located in the current database! try again!"
+  printf "In order to see a list of all the countries check out the following link: \n $cityURL"
+  exit
+}
+
 if [[ ! -e $conf ]]; then
   PS3="Select your option[1-6]:"
   select opt in Jerusalem Tel-aviv Haifa Be\'er-Sheva other quit; do
@@ -51,7 +62,7 @@ if [[ ! -e $conf ]]; then
         ;;
       other)
         read -p "Enter the city's name(hebrew):" temp
-        checkCity temp
+        checkCity "$temp"
         cityOPT="Other"
         break;
         ;;
@@ -99,14 +110,3 @@ BIWhite='\033[1;97m'
 echo -e "${GREEN}Knisat shabbat:${BIWhite}$hadlaka"
 echo -e "${RED}Yetziat shabbat:${BIWhite}$yetzia"
 echo -e "${ORANGE}Rabenu-tam:${BIWhite}$rabeno${NC}"
-
-checkCity () {
-  #Curling cities database.
-  curl --silent --output /tmp/shabbat/etc/cities.txt $cityURL
-  # if the city is found in the database, change city value and end the function;
-  # otherwise inform the user of the following and end the program.
-  [ grep -q $1 /tmp/shabbat/etc/cities.txt ] && $city=$1 && return;
-  echo "The city you entered cannot be located in the current database! try again!"
-  echo "In order to see a list of all the countries check out the following link: \n $cityURL"
-  exit
-}
