@@ -3,8 +3,11 @@
 a random bash script to easily get the shabbat entry&amp;leaving info.
 
 סקריפט רנדומלי על מנת לקבל את הכניסה והיציאה של השבת (כולל רבנו-תם) בצורה נוחה ויעילה, דרך שורת הפקודות.
-***Shabbat times are calculated by Hazon-Shmaim method!
-זמני כניסת השבת מחושבים על-פי שיטת החזון שמים!***
+
+
+***Shabbat times are calculated by Hazon-Shmaim method!***
+
+***זמני כניסת השבת מחושבים על-פי שיטת החזון שמים!***
 Configuration and running
 -------------------------
 Dependencies: [`pup`](https://github.com/ericchiang/pup "Pup's Repository"), `grep`, `stat`, `curl`, `cut`. Most probably are already present in your distribution.
