@@ -1,4 +1,5 @@
 #!/bin/sh
+
 #City name.
 city=""
 #City type.
@@ -6,7 +7,7 @@ cityOPT=""
 #Cities database url.
 cityURL="https://raw.githubusercontent.com/ignaudioz/bash-knisatShabbat/main/etc/cities.txt"
 # URL
-url="https://calendar.2net.co.il/parasha.aspx"
+url="https://calendar.2net.co.il/parasha.aspx?methodId=0"
 #Config location
 conf=$XDG_CONFIG_HOME/shabbatTimes/shabbatTimes.txt
 
@@ -18,7 +19,7 @@ getPrint_info() {
   if [ ! -e "/tmp/shabbat/shabbat_$cityOPT.html" ]; then
     curl --silent --output /tmp/shabbat/shabbat_$cityOPT.html $url --data-urlencode "city=$city" --create-dirs
   # if Shabbat file creation-date doesn't equal to current-date, update the file.
-  elif [ "$(2>/dev/null stat -c "%w" /tmp/shabbat/shabbat_$cityOPT.html | cut -c 9-10)" -ne "$(date +"%d")" ]; then
+  elif [ "$(2>/dev/null stat -c "%w" /tmp/shabbat/shabbat_$cityOPT.html | cut -c 1-10)" != "$(date +"%Y-%m-%d")" ]; then
     curl --silent --output /tmp/shabbat/shabbat_$cityOPT.html $url --data-urlencode "city=$city" --create-dirs
   fi
 
@@ -35,24 +36,12 @@ getPrint_info() {
   BIWhite='\033[1;97m' 
 
   # final echo.
+  # echo "$city"
+  # echo "$cityOPT"
   echo -e "${GREEN}Knisat shabbat:${BIWhite}$hadlaka"
   echo -e "${RED}Yetziat shabbat:${BIWhite}$yetzia"
   echo -e "${ORANGE}Rabenu-tam:${BIWhite}$rabeno${NC}"
 }
-
-while getopts hr option
-do 
-    case "${option}"
-        in
-        h)
-        echo "Use -r in order to remove default city. e.g shabbatTimes.sh -r"
-        exit
-        ;;
-        r)
-         2>/dev/null rm -r $conf 
-        ;;
-    esac
-done
 
 checkCity () {
   #Curling cities database.
@@ -65,60 +54,83 @@ checkCity () {
   exit
 }
 
+# Menu selecting.
+menu() {
+  if [[ ! -e $conf ]]; then
+    PS3="Select your option[1-6]:"
+    select opt in Jerusalem Tel-aviv Haifa Be\'er-Sheva other quit; do
+      case $opt in
+        Jerusalem)
+          city="ירושלים"
+          cityOPT="Jerusalem"
+          getPrint_info
+          break
+          ;;
+        Tel-aviv)
+          city="תל אביב"
+          cityOPT="TelAviv"
+          getPrint_info
+          break
+          ;;
+        Haifa)
+          city="חיפה"
+          cityOPT="Haifa"
+          getPrint_info
+          break
+         ;;
+        Be\'er-Sheva)
+          city="באר שבע"
+          cityOPT="BeerSheva"
+          getPrint_info
+          break
+          ;;
+        other)
+          read -p "Enter the city's name(hebrew):" temp
+          checkCity "$temp"
+          cityOPT="Other"
+          getPrint_info
+          break;
+          ;;
+        quit)
+          exit
+          break
+          ;;
+        *) 
+          echo "Invalid city $REPLY"
+          ;;
+      esac
+    done
+    [ ! -d "$XDG_CONFIG_HOME/shabbatTimes" ] && mkdir "$XDG_CONFIG_HOME/shabbatTimes"
+    echo "$city;$cityOPT" > $conf
+  else # if there's already a city saved in conf, use it.
+    city=$(cat $conf | awk -F";" '{ print $1}') 
+    cityOPT=$(cat $conf | awk -F";" '{ print $2}')
+    getPrint_info
+  fi
+}
+
+# checking options
+while getopts hr option
+do 
+    case "${option}"
+        in
+        h)
+        echo "Use -r in order to remove default city. e.g shabbatTimes.sh -r"
+        exit
+        ;;
+        r)
+         2>/dev/null rm -r $conf && 2>/dev/null rm -rf /tmp/shabbat
+         menu
+         exit
+        ;;
+    esac
+done
+
 # Checking for a city in arguments.
 if [ "$1" ]; then
   checkCity "$1"
   cityOPT="Other"
-  getPrint_info
-fi
-
-if [[ ! -e $conf ]]; then
-  PS3="Select your option[1-6]:"
-  select opt in Jerusalem Tel-aviv Haifa Be\'er-Sheva other quit; do
-    case $opt in
-      Jerusalem)
-        city="ירושלים"
-        cityOPT="Jerusalem"
-        getPrint_info
-        break
-        ;;
-      Tel-aviv)
-        city="תל אביב"
-        cityOPT="TelAviv"
-        getPrint_info
-        break
-        ;;
-      Haifa)
-        city="חיפה"
-        cityOPT="Haifa"
-        getPrint_info
-        break
-       ;;
-      Be\'er-Sheva)
-        city="באר שבע"
-        cityOPT="BeerSheva"
-        getPrint_info
-        break
-        ;;
-      other)
-        read -p "Enter the city's name(hebrew):" temp
-        checkCity "$temp"
-        cityOPT="Other"
-        getPrint_info
-        break;
-        ;;
-      quit)
-        break
-        ;;
-      *) 
-        echo "Invalid city $REPLY"
-        ;;
-    esac
-  done
-  [ ! -d "$XDG_CONFIG_HOME/shabbatTimes" ] && mkdir "$XDG_CONFIG_HOME/shabbatTimes"
-  echo "$city;$cityOPT" > $conf
-elif [[ -z "$1" ]]; then # if there's already a city saved in conf and no arguments, use it.
-  city=$(cat $conf | awk -F";" '{ print $1}') 
-  cityOPT=$(cat $conf | awk -F";" '{ print $2}')
-  getPrint_info
+  getPrint_info 
+else
+  menu
 fi
