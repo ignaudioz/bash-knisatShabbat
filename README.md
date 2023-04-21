@@ -6,9 +6,10 @@ a random bash script to easily get the shabbat entry&amp;leaving info.
 
 
 ***Shabbat times are calculated by Hazon-Shmaim method!***
-***זמני כניסת השבת מחושבים על-פי שיטת החזון שמים!***
+***זמני כניסת השבת מחושבים על-פי שיטת החזון שמים!**
 
-Configuration and running
+
+Configuration and running.
 -------------------------
 Dependencies: [`pup`](https://github.com/ericchiang/pup "Pup's Repository"), `grep`, `stat`, `curl`, `cut`. Most probably are already present in your distribution.
 
