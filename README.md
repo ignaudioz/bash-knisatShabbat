@@ -17,6 +17,8 @@ Basic Usage
 First time running, asking ur city and saving it as prefrence.
 ```bash
 ~ λ shabbatTimes
+```
+```
 1) Jerusalem	3) Haifa	5) other
 2) Tel-aviv	4) Be'er-Sheva	6) quit
 Select your option[1-6]:1
@@ -31,6 +33,8 @@ Examples
 #### Get Shabbat times of a city using arguments. (city name must be in hebrew)
 ```bash
 ~ λ shabbatTimes "אור יהודה"
+```
+```
 Knisat shabbat:18:52
 Yetziat shabbat:19:52
 Rabenu-tam:20:26
