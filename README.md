@@ -6,6 +6,7 @@ a random bash script to easily get the shabbat entry&amp;leaving info.
 
 
 ***Shabbat times are calculated by Hazon-Shmaim method!***
+
 ***זמני כניסת השבת מחושבים על-פי שיטת החזון שמים!***
 
 
