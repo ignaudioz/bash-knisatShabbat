@@ -39,6 +39,8 @@ Rabenu-tam:20:26
 #### Rest prefrence.
 ```bash
 ~ λ shabbatTimes -r
+```
+```
 1) Jerusalem	3) Haifa	5) other
 2) Tel-aviv	4) Be'er-Sheva	6) quit
 Select your option[1-6]:
