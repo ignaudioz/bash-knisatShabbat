@@ -18,12 +18,12 @@ First time running, asking ur city and saving it as prefrence.
 ```bash
 ~ λ shabbatTimes
 1) Jerusalem	3) Haifa	5) other
-2) Tel-aviv	4) Be\'er-Sheva	6) quit
+2) Tel-aviv	4) Be'er-Sheva	6) quit
 Select your option[1-6]:1
 Knisat shabbat:18:36
 Yetziat shabbat:19:50
 Rabenu-tam:20:25
-````
+```
 
 
 Examples
@@ -40,7 +40,7 @@ Rabenu-tam:20:26
 ```bash
 ~ λ shabbatTimes -r
 1) Jerusalem	3) Haifa	5) other
-2) Tel-aviv	4) Be\'er-Sheva	6) quit
+2) Tel-aviv	4) Be'er-Sheva	6) quit
 Select your option[1-6]:
 ```
 
