@@ -1,5 +1,13 @@
 #!/bin/sh
 
+# The script does the following:
+#       Shows a menu at first launch on which city do you want to get the times for.
+#       Fetch a site  that contains joining and exiting of shabbat
+#       Fliter the data correctly
+#       Print it to the user.
+
+
+
 #City name.
 city=""
 #City type.
@@ -17,10 +25,10 @@ getPrint_info() {
   # Appending city(hebrew)'s name to the url to get current shabbat times using
   # curl's urlencode (--data-urlencode)
   if [ ! -e "/tmp/shabbat/shabbat_$cityOPT.html" ]; then
-    curl --silent --output /tmp/shabbat/shabbat_$cityOPT.html $url --data-urlencode "hcity=$city" --create-dirs
+    curl --silent --output /tmp/shabbat/shabbat_$cityOPT.html $url --data-urlencode "city=$city" --create-dirs
   # if Shabbat file creation-date doesn't equal to current-date, update the file.
   elif [ "$(2>/dev/null stat -c "%w" /tmp/shabbat/shabbat_$cityOPT.html | cut -c 1-10)" != "$(date +"%Y-%m-%d")" ]; then
-    curl --silent --output /tmp/shabbat/shabbat_$cityOPT.html $url --data-urlencode "hcity=$city" --create-dirs
+    curl --silent --output /tmp/shabbat/shabbat_$cityOPT.html $url --data-urlencode "city=$city" --create-dirs
   fi
 
   # parsing and grepping shabbat times.
