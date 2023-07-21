@@ -1,4 +1,4 @@
-#!/bin/sh
+#! /bin/sh
 
 # The script does the following:
 #       Shows a menu at first launch on which city do you want to get the times for.
@@ -49,17 +49,26 @@ getPrint_info() {
   echo -e "${GREEN}Knisat shabbat:${BIWhite}$hadlaka"
   echo -e "${RED}Yetziat shabbat:${BIWhite}$yetzia"
   echo -e "${ORANGE}Rabenu-tam:${BIWhite}$rabeno${NC}"
+  exit 0
 }
 
 checkCity () {
   #Curling cities database.
-  curl --silent --output /tmp/shabbat/etc/cities.txt $cityURL --create-dirs
-  # if the city is found in the database, change city value and end the function;
-  # otherwise inform the user of the following and end the program.
-  grep -q "$1" "/tmp/shabbat/etc/cities.txt" && city="$1" && return;
-  echo "The city you entered cannot be located in the current database! try again!"
-  printf "In order to see a list of all the countries check out the following link: \n $cityURL"
-  exit
+  [ ! -e "/tmp/shabbat/etc/cities.txt" ] && curl --silent \
+    --output "/tmp/shabbat/etc/cities.txt" $cityURL --create-dirs
+
+  grep -q "$1" "/tmp/shabbat/etc/cities.txt" && curl --silent --output "/tmp/shabbat/shabbat_$cityOPT.html" $url --data-urlencode "city=$1" --create-dirs && status=true
+  
+  if [ $status ]; then
+    [ ! -d "$XDG_CONFIG_HOME/shabbatTimes" ] && mkdir "$XDG_CONFIG_HOME/shabbatTimes" || 2>/dev/null rm -r $conf 
+    echo "$1;$cityOPT" > $conf
+    getPrint_info
+  else
+    echo "The city you entered cannot be located in the current database! try again!"
+    printf "In order to see a list of all the countries check out the following link: \n $cityURL"
+    exit 1
+  fi
+
 }
 
 # Menu selecting.
@@ -119,7 +128,7 @@ menu() {
 
 # checking options
 while getopts hr option
-do 
+  do 
     case "${option}"
         in
         h)
@@ -134,11 +143,11 @@ do
     esac
 done
 
-# Checking for a city in arguments.
-if [ "$1" ]; then
-  checkCity "$1"
-  cityOPT="Other"
-  getPrint_info 
-else
+shift $((OPTIND - 1))
+if [ -z "$1" ]; then
   menu
+else
+  cityOPT="Other"
+  checkCity "$1"
+  getPrint_info
 fi
